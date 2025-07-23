@@ -1,6 +1,35 @@
-wait ("0.2")
-local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
+-- Key Checker
+local HttpService = game:GetService("HttpService")
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
 
+local function fetchKey()
+	local success, result = pcall(function()
+		return game:HttpGet("https://raw.githubusercontent.com/awakeningswifters/Swifters-Hub/main/key.txt")
+	end)
+	if success and result then
+		return result:match("^%s*(.-)%s*$") -- Trim whitespace
+	end
+	return nil
+end
+
+local validKey = fetchKey()
+
+if not validKey then
+	LocalPlayer:Kick("❌ Failed to fetch the key from the server.")
+	return
+end
+
+if getgenv().key ~= validKey then
+	LocalPlayer:Kick("❌ Invalid or expired key.\nPlease get the latest key.")
+	return
+end
+
+print("[Ruler Hub] ✅ Key Accepted. Loading main hub...")
+
+loadstring(game:HttpGet("https://raw.githubusercontent.com/awakeningswifters/Swifters-Hub/main/main.lua"))()
+
+local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 local Window = Rayfield:CreateWindow({
    Name = "Swifters Hub",
    Icon = 0, -- Icon in Topbar. Can use Lucide Icons (string) or Roblox Image (number). 0 to use no icon (default).
