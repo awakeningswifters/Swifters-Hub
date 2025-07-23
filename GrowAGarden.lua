@@ -1,32 +1,33 @@
--- Key Checker
-local HttpService = game:GetService("HttpService")
+-- Key Validation System
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
 
-local function fetchKey()
-	local success, result = pcall(function()
-		return game:HttpGet("https://raw.githubusercontent.com/awakeningswifters/Swifters-Hub/main/key.txt")
-	end)
-	if success and result then
-		return result:match("^%s*(.-)%s*$") -- Trim whitespace
-	end
-	return nil
+local function fetchKeyFromGitHub()
+    local success, result = pcall(function()
+        return game:HttpGet("https://raw.githubusercontent.com/awakeningswifters/Swifters-Hub/main/key.txt")
+    end)
+    if success and result then
+        return result:match("^%s*(.-)%s*$") -- trim spaces
+    else
+        return nil
+    end
 end
 
-local validKey = fetchKey()
+local validKey = fetchKeyFromGitHub()
 
 if not validKey then
-	LocalPlayer:Kick("❌ Failed to fetch the key from the server.")
-	return
+    LocalPlayer:Kick("❌ Unable to fetch key from server.")
+    return
 end
 
 if getgenv().key ~= validKey then
-	LocalPlayer:Kick("❌ Invalid or expired key.\nPlease get the latest key.")
-	return
+    LocalPlayer:Kick("❌ Invalid key. Please get the correct key to use Swifters Hub.")
+    return
 end
 
-print("[Ruler Hub] ✅ Key Accepted. Loading main hub...")
+print("[Swifters Hub] ✅ Key accepted! Loading script...")
 
+-- Continue to load your real hub features
 loadstring(game:HttpGet("https://raw.githubusercontent.com/awakeningswifters/Swifters-Hub/main/main.lua"))()
 
 local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
